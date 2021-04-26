@@ -1,0 +1,28 @@
+// Place all the styles related to the Posts controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+
+
+
+
+.post-actions{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	
+
+	i{
+		margin-left: 15px;
+		color: #ddd;
+		cursor: pointer;
+	}
+
+	i:hover{
+		color: #999;
+	}
+
+	i.active{
+		color:#396CE1
+	}
+}

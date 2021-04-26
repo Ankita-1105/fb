@@ -1,0 +1,127 @@
+<div class="container">
+  <div class="row">
+    <div class="col md-4">
+      <% @posts.each do |post|%>
+        <div style="margin-top: 2% ">
+
+          <% if post.user.image.url %>
+            <%= image_tag post.user.image.url, width: "50px", height: "50px" %>
+          <% else %>
+            <%= image_tag "1.jpg", width: "50px", height: "50px" %>
+          <% end %>
+          <%= link_to post.user.full_name, user_path(post.user) %>
+
+        </div>
+        <% if current_user.id == post.user_id %>
+            <%= link_to post_path(post), method: :delete, data: { confirm: "You sure?" } do %>
+              <i class="fa fa-trash hover-red"></i>
+            <% end %>
+          <% end %>
+        
+        <div style="margin-top: 2% ">
+          <div>
+            <%= simple_format post.content %>
+          </div>
+            <%= image_tag post.image.url , width: "400px", height: "400px" %> 
+          <div>
+          
+          <div class="post-actions">
+
+            <i class= "fa fa-thumbs-up like-<%= post.id %> <%= 'active' if post_liked_by_user?(post.id) %> fa-2x post-like" data-id="<%= post.id %>" aria-hidden="true"></i>
+    
+          </div>
+          <p><strong style="margin-left: 15px;" id="post-<%= post.id %>-likes"><%= post.total_likes_count %>  Likes</strong></p>
+          <i><p class="text-muted"><%= time_ago_in_words post.created_at %> ago</p></i> 
+
+          
+
+          <%= render "posts/comments", post: post %>
+        
+          <div class="comment-box">
+            <%= form_for @comment do |f| %>
+              <%= f.hidden_field :post_id, value: post.id %> 
+              <%= f.text_field :comment, placeholder: "Add comment here......", class:"form-control post-comment" %>
+              <%= f.submit "Post", class:"btn btn-success float-right" %>
+            <% end %>
+          </div>
+
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+
+
+  <div class="col md-4">   
+
+  <% unless @friends.empty? %>
+    <div>
+      <h2>My Friends</h2><br> 
+      <% @friends.each do |user|%> 
+        <div>
+          <%= link_to user_path(user) do %>
+            <%= user.full_name %>
+          <% end %>
+          <button class= "btn btn-friend shadow"> Friend </button>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% unless @pending_requests.empty? %>
+    <div>
+      <h2>Sent Friend Requests</h2><hr> 
+      <% @pending_requests.each do |user|%>
+        <div> 
+          <%= link_to user_path(user) do %>
+            <%= user.full_name %>
+          <% end %>
+          <button class= "btn btn-secondary shadow" disabled> Friend Request pending... </button>
+        </div>        
+      <% end %>
+    </div>
+  <% end %>
+
+  <% unless @friend_requests.empty? %>
+    <div>
+        <h2>Pending Friend Requests</h2><hr> 
+        <% @friend_requests.each do |user|%>          
+            <div> 
+              <%= link_to user_path(user) do %>
+              <%= user.full_name %>
+              <% end %>
+
+              <%= link_to accept_friend_user_friendships_path(user) do %>
+                <button type="button" class="btn btn-accept"></i> Accept</button>
+              <% end %>
+              <%= link_to decline_friend_user_friendships_path(user) do %>
+                <button type="button" class="btn btn-decline"></i> Decline</button>
+              <% end %>
+
+            </div>    
+        <% end %>
+    </div>
+  <% end %>
+
+
+  <div>
+    <h2>All Users</h2> 
+    <% @users.each do |user|%>
+      <% if current_user.id != user.id%>
+        <% unless possible_friend?(user) %>
+          <div> 
+            <%= link_to user_path(user) do %>
+              <%= user.full_name %>
+            <% end %> 
+            <%= link_to user_friendships_path(user), method: :post do %>
+              <button class= "btn btn-user "> Send Friend Request? </button>
+            <% end %>
+          </div>
+        <%end%>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+</div>
